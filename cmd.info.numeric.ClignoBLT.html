@@ -51,7 +51,7 @@
 			var miniValue = is_numeric('#seuilMini#') ? parseFloat('#seuilMini#'):parseFloat('#minValue#');
             var maxiValue = is_numeric('#seuilMaxi#') ? parseFloat('#seuilMaxi#'):parseFloat('#maxValue#');
 			
-            if ('#cadre#' == '1'){
+            if ('#cadre#' == 'on'){
               if (value > miniValue && value < maxiValue) {
                 cmd.find('.state').addClass("clignoValue");}
 				else {
