@@ -1,0 +1,83 @@
+<div class="cmd cmd-widget #history#" data-type="info" data-subtype="numeric" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+  <div class="content-xs">
+		<span class="cmdName #hide_name#">#name_display# </span> <strong class="state"></strong>
+	</div>
+  <div class="title #hide_name#">
+		<div  class="cmdName">#name_display#</div>
+	</div>
+	<div class="content-sm">
+      <div class="tile">
+		<span class="pull-right">#unite#</span>
+		<span class="pull-right state"></span>
+      </div>
+      <div class="badge">
+      <span class='label label-info state'></span>
+      </div>
+	</div>
+	<div class="value #hide_history#">
+		<div class="col-xs-12 center-block">
+			<span title='Min' class='tooltips'>#minHistoryValue#</span>|<span title='Moyenne' class='tooltips'>#averageHistoryValue#</span>|<span title='Max' class='tooltips'>#maxHistoryValue#</span> <i class="#tendance#"></i>
+		</div>
+	</div>
+	<style>
+@keyframes cligno
+{
+0% {opacity:0;}
+100% {opacity:1;}
+}
+.clignoValue {animation:cligno infinite 0.8s;}
+  </style>
+	<script>
+		jeedom.cmd.update['#id#'] = function(_options){
+			var cmd = $('.cmd[data-cmd_id=#id#]')
+            var value = _options.display_value
+			cmd.attr('title','Date de valeur : '+_options.valueDate+'<br/>Date de collecte : '+_options.collectDate)
+
+           if ('#disposition#' == 'tile'){ 
+             cmd.find('.content-xs').hide()
+             cmd.find('.badge').hide()
+             cmd.attr('data-template','tile')
+          	 cmd.find('.state').empty().append(value);}
+      		else if ('#disposition#' == 'badge'){
+             cmd.find('.content-xs').hide()
+              cmd.find('.tile').hide()
+             cmd.attr('data-template','badge')
+          	 cmd.find('.state').empty().append(value +' #unite#');}
+          else { cmd.find('.title').hide()
+            	cmd.find('.content-sm').hide()
+                cmd.attr('data-template','line')
+          		cmd.find('.state').empty().append(value +' #unite#');}
+         	
+			var miniValue = is_numeric('#seuilMini#') ? parseFloat('#seuilMini#'):parseFloat('#minValue#');
+            var maxiValue = is_numeric('#seuilMaxi#') ? parseFloat('#seuilMaxi#'):parseFloat('#maxValue#');
+			
+            if ('#cadre#' == 'on'){
+              if (value > miniValue && value < maxiValue) {
+                cmd.find('.state').addClass("clignoValue");}
+				else {
+				cmd.find('.state').removeClass("clignoValue");}
+            }
+			else if (value <= miniValue | value >= maxiValue) {
+				cmd.find('.state').addClass("clignoValue");}
+				else {
+				cmd.find('.state').removeClass("clignoValue");}
+
+     if(_options.alertLevel){
+				if(_options.alertLevel == 'warning'){
+                    cmd.find('.content-xs').addClass('label label-warning')
+					cmd.find('.content-sm').addClass('label label-warning')
+					cmd.attr('data-alertlevel','warning');
+				}else if(_options.alertLevel == 'danger'){
+                  	cmd.find('.content-xs').addClass('label label-danger')
+					cmd.find('.content-sm').addClass('label label-danger')
+					cmd.attr('data-alertlevel','danger');
+				}else{
+                  	cmd.find('.content-xs').removeClass('label label-warning label-danger')
+					cmd.find('.content-sm').removeClass('label label-warning label-danger')
+					cmd.attr('data-alertlevel','none');
+				}
+			}
+		}
+		jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+	</script>
+</div>
